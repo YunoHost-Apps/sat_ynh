@@ -1,0 +1,6 @@
+SOURCE_URL=http://ftp.goffi.org/sat/sat-0.7.0a1.tar.bz2
+SOURCE_SUM=da8f6c48734a05910e1a6a719ffae1fb84f59da0caf20e9d3ec4aa0ff234d64d
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.bz2
+SOURCE_IN_SUBDIR=true
+SOURCE_FILENAME=

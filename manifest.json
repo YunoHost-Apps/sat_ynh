@@ -1,0 +1,51 @@
+{
+	"name": "Salut à Toi",
+	"id": "sat",
+	"packaging_format": 1,
+	"requirements": {
+		"yunohost": ">= 3.0.0"
+	},
+	"description": {
+		"en": "A XMPP/Jabber client which can have several user interfaces. Libervia is included."
+	},
+	"version": "0.7.0a1~ynh1",
+	"url": "https://salut-a-toi.org",
+	"license": "AGPL-3.0-or-later",
+	"maintainer": {
+		"name": "Jean-Baptiste Holcroft",
+		"email": "jean-baptiste@holcroft.fr"
+	},
+	"multi_instance": false,
+	"services": [
+		"nginx",
+		"metronome"
+	],
+	"arguments": {
+		"install" : [
+			{
+				"name": "domain",
+				"type": "domain",
+				"ask": {
+					"en": "Choose a domain"
+				},
+				"example": "domain.fr"
+			},
+			{
+				"name": "is_public",
+				"type": "boolean",
+				"ask": {
+					"en": "Should `Salut-à-Toi` be publicly accessible?"
+				},
+				"default": "0"
+			},
+			{
+				"name": "admin",
+				"type": "user",
+				"ask": {
+					"en": "Choose an admin user"
+				},
+				"example": "jibec"
+			}
+		]
+	}
+}
