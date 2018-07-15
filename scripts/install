@@ -95,10 +95,11 @@ ynh_install_app_dependencies python-pip python-virtualenv python-dev libxml2-dev
 #=================================================
 
 ynh_app_setting_set "$app" final_path "$final_path"
-# Download, check integrity, uncompress and patch the source from app.src
+# Download, check integrity, uncompress for Salut à Toi
 ynh_setup_source "$final_path"
-ynh_setup_source "$final_path/sat_media" "app-media"
-# ynh_setup_source "$final_path/libervia" "app-libervia"
+ynh_setup_source "$final_path/sat_media"  "app-media"
+
+mkdir "$final_path/.local"
 
 #=================================================
 # NGINX CONFIGURATION
@@ -120,14 +121,15 @@ ynh_system_user_create "$app" "$final_path"
 # PYTHON DEPENDENCIES
 #=================================================
 
-virtualenv --system-site-packages "$final_path/virtualenv"
+virtualenv --system-site-packages "$final_path/venv"
 (
 	set +o nounset
-	source "${final_path}/virtualenv/bin/activate"
+	source "${final_path}/venv/bin/activate"
 	set -o nounset
 	pip install --upgrade pip
 	pip install --upgrade setuptools
 	pip install wheel
+	# install Salut à Toi
 	pip install sat==0.7.0a1 --ignore-installed pyasn1
 )
 
@@ -149,10 +151,18 @@ ynh_replace_string "__KEY__"       "$key"         "$configfile"
 ynh_replace_string "__ADMIN__"     "$admin"       "$configfile"
 
 #=================================================
+# ADD DBUS EXEC FILE
+#=================================================
+
+cp ../conf/bin/dbus-exec.sh "$final_path/bin/dbus-exec.sh"
+cp ../conf/bin/dbus-launch.sh "$final_path/bin/dbus-launch.sh"
+
+#=================================================
 # SETUP SYSTEMD
 #=================================================
 
-# TODO: systemd
+# ynh_add_systemd_config "${app}_dbus_user" "service-dbus_user.service"
+ynh_add_systemd_config "$app" "service-sat.service"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -162,6 +172,8 @@ ynh_replace_string "__ADMIN__"     "$admin"       "$configfile"
 
 # Set permissions to app files
 # chown -R "$app": "$final_path"
+chmod +x "$final_path/bin/"*
+chown -R "$app" "$final_path/.local"
 
 #=================================================
 # SETUP SSOWAT
@@ -182,5 +194,5 @@ fi
 # RELOAD NGINX
 #=================================================
 
-# systemctl start "$app"
+systemctl start "$app"
 systemctl reload nginx

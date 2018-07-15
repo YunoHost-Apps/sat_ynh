@@ -1,0 +1,14 @@
+[Unit]
+Description=SàT backend
+Wants=metronome.service
+
+[Service]
+Environment="PATH=__FINALPATH__/bin:__FINALPATH__/venv/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+WorkingDirectory=__FINALPATH__/
+ExecStart=__FINALPATH__/bin/dbus-exec.sh __FINALPATH__/bin/sat fg
+ExecStop=__FINALPATH__/bin/dbus-exec.sh __FINALPATH__/bin/sat stop
+User=__APP__
+Group=__APP__
+
+[Install]
+WantedBy=multi-user.target
