@@ -13,7 +13,6 @@ source /usr/share/yunohost/helpers
 # MANAGE SCRIPT FAILURE
 #=================================================
 
-# Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
 #=================================================
@@ -130,7 +129,7 @@ virtualenv --system-site-packages "$final_path/venv"
 	pip install --upgrade setuptools
 	pip install wheel
 	# install Salut à Toi
-	pip install sat==0.7.0a1 --ignore-installed pyasn1
+	pip install sat==0.7.0 --ignore-installed pyasn1
 )
 
 #=================================================

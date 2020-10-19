@@ -2,9 +2,6 @@
 	"name": "Salut à Toi",
 	"id": "sat",
 	"packaging_format": 1,
-	"requirements": {
-		"yunohost": ">= 3.0.0"
-	},
 	"description": {
 		"en": "A XMPP/Jabber client which can have several user interfaces. Libervia is included."
 	},
@@ -14,6 +11,9 @@
 	"maintainer": {
 		"name": "Jean-Baptiste Holcroft",
 		"email": "jean-baptiste@holcroft.fr"
+	},
+	"requirements": {
+	"yunohost": ">= 3.8.1"
 	},
 	"multi_instance": false,
 	"services": [
@@ -26,7 +26,8 @@
 				"name": "domain",
 				"type": "domain",
 				"ask": {
-					"en": "Choose a domain"
+                    "en": "Choose a domain name for Salut à Toi",
+                    "fr": "Choisissez un nom de domaine pour Salut à Toi"
 				},
 				"example": "domain.fr"
 			},
@@ -34,15 +35,17 @@
 				"name": "is_public",
 				"type": "boolean",
 				"ask": {
-					"en": "Should `Salut-à-Toi` be publicly accessible?"
+                    "en": "Is it a public application?",
+                    "fr": "Est-ce une application publique ?"
 				},
-				"default": "0"
+				"default": true
 			},
 			{
 				"name": "admin",
 				"type": "user",
 				"ask": {
-					"en": "Choose an admin user"
+                    "en": "Set the administrator password",
+                    "fr": "Définissez le mot de passe administrateur"
 				},
 				"example": "jibec"
 			}
