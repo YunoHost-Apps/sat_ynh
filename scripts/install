@@ -30,18 +30,11 @@ app=$YNH_APP_INSTANCE_NAME
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
 
-final_path="/var/www/$app"
-test ! -e "$final_path" || ynh_die "This path already contains a folder"
+final_path=/var/www/$app
+test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
 
-# Normalize the url path syntax
-path_url=$(ynh_normalize_url_path "$path_url")
-
-test ! "$path_url" != "/" ||  ynh_die 'The path should be "/" for now...'
-
-# Check web path availability
-ynh_webpath_available "$domain" "$path_url"
 # Register (book) web path
-ynh_webpath_register "$app" "$domain" "$path_url"
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
@@ -68,26 +61,7 @@ ynh_app_setting_set "$app" admin "$admin"
 # INSTALL DEPENDENCIES
 #=================================================
 
-ynh_install_app_dependencies python-pip python-virtualenv python-dev libxml2-dev \
-	libxslt-dev libjpeg-dev libffi-dev zlib1g-dev \
-	`# add dbus glib gobject-introspection and cairo2` \
-	dbus-x11 libglib2.0-dev libgirepository1.0-dev libcairo2-dev
-
-#=================================================
-# CREATE A PostgreSQL DATABASE
-#=================================================
-
-# ynh_psql_test_if_first_run
-
-# db_name=$(ynh_sanitize_dbid "$app")
-# db_user=$db_name
-# db_pwd=$(ynh_string_random)
-# Initialize database and store postgres password for upgrade
-# ynh_psql_create_db "$db_name" "$db_user" "$db_pwd"
-# ynh_app_setting_set "$app" db_name "$db_name"
-# ynh_app_setting_set "$app" psqlpwd "$db_pwd"
-
-# systemctl reload postgresql
+ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -178,7 +152,7 @@ chown -R "$app" "$final_path/.local"
 # ADVERTISE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add "$app"
+yunohost service add $app --description "A short description of the app" --log "/var/log/$app/$app.log"
 
 #=================================================
 # SETUP SSOWAT
@@ -199,5 +173,17 @@ fi
 # RELOAD NGINX
 #=================================================
 
-systemctl start "$app"
-systemctl reload nginx
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Installation of $app completed" --time --last
